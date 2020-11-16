@@ -5,11 +5,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ListView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import app.com.androidloginjson.adapters.CustomRecyclerAdapter
 import app.com.androidloginjson.model.Item
-import com.example.customadapterlistviewexample.adapters.ItemListAdapter
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -19,33 +19,48 @@ class UserList : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_list)
         val contexto: Context = this
+//List View
 
-        var listview = findViewById<ListView>(R.id.listview)
-        var arrayItems = leerLista()
+        //var listview = findViewById<ListView>(R.id.listview)
 
+//Grid View
+
+//        var listview = findViewById<GridView>(R.id.gridview)
+//
+//        var arrayItems = leerLista()
+//
+//        val objetoIntent: Intent = intent
+//        var id = objetoIntent.getStringExtra("id")
+//        Toast.makeText(this, id, Toast.LENGTH_LONG).show()
+//
+//        var adapter = ItemListAdapter(this, arrayItems, id!!)
+//
+//        listview.adapter = adapter
+//
+//        listview.onItemClickListener = object : AdapterView.OnItemClickListener {
+//
+//            override fun onItemClick(parent: AdapterView<*>, view: View,
+//                                     position: Int, id: Long) {
+//
+//                val itemValue = listview.getItemAtPosition(position) as Item
+//                Toast.makeText(applicationContext, "Posicion :$position\nValor : ${itemValue.id + "-" + itemValue.name+ "-" + itemValue.apellido}", Toast.LENGTH_LONG).show()
+//
+//                var miIntent = Intent(contexto, Informacion::class.java)
+//                miIntent.putExtra("id", itemValue.id)
+//                startActivity(miIntent)
+//
+//
+//            }
+//        }
+
+//Recycler View
         val objetoIntent: Intent = intent
         var id = objetoIntent.getStringExtra("id")
-        Toast.makeText(this, id, Toast.LENGTH_LONG).show()
-
-        var adapter = ItemListAdapter(this, arrayItems, id!!)
-
-        listview.adapter = adapter
-
-        listview.onItemClickListener = object : AdapterView.OnItemClickListener {
-
-            override fun onItemClick(parent: AdapterView<*>, view: View,
-                                     position: Int, id: Long) {
-
-                val itemValue = listview.getItemAtPosition(position) as Item
-                Toast.makeText(applicationContext, "Posicion :$position\nValor : ${itemValue.id + "-" + itemValue.name+ "-" + itemValue.apellido}", Toast.LENGTH_LONG).show()
-
-                var miIntent = Intent(contexto, Informacion::class.java)
-                miIntent.putExtra("id", itemValue.id)
-                startActivity(miIntent)
-
-
-            }
-        }
+        var recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        var arrayList = leerLista()
+        var customAdapter = CustomRecyclerAdapter(arrayList, id!!,this){item -> click(item) }
+        recyclerView.adapter = customAdapter
 
     }
 
@@ -81,5 +96,14 @@ class UserList : AppCompatActivity() {
     fun goRegistro(view: View) {
         var miIntent = Intent(this, Registro::class.java)
         startActivity(miIntent)
+    }
+    fun click(itemValue : Item){
+        var miIntent = Intent(this, Informacion::class.java)
+        miIntent.putExtra("id", itemValue.id)
+        startActivity(miIntent)
+        //Toast.makeText(applicationContext, "Valor :  ${itemValue.id}", Toast.LENGTH_LONG).show()
+    }
+    fun clickImage(texto : String){
+        Toast.makeText(applicationContext, "Bandera : $texto", Toast.LENGTH_LONG).show()
     }
 }
